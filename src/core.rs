@@ -14,7 +14,7 @@ impl Store {
         }
     }
     pub fn get(&self, key: String) -> Option<String> {
-        let mut data = self.data.lock().unwrap();
+        let data = self.data.lock().unwrap();
         data.get(&key).cloned()
     }
     pub fn set(&self, key: String, value: String) -> bool {

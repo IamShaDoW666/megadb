@@ -1,3 +1,5 @@
+use std::io::Write;
+
 use tokio::{
     io::{self, AsyncBufReadExt, AsyncWriteExt},
     net::TcpStream,
@@ -25,9 +27,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 Ok(_) => {
                     // Erase the current line, print the server message, then reprint the prompt
-                    print!("\r{}\rServer: {}", " ".repeat(100), line);
+                    println!("Server: {}", line);
                     print!("> ");
-                    io::stdout().flush().await.unwrap();
+                    std::io::stdout().flush().unwrap();
                     line.clear();
                 }
                 Err(e) => {
@@ -45,7 +47,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let mut stdin_buffered = io::BufReader::new(io::stdin());
         loop {
             print!("> ");
-            io::stdout().flush().await.unwrap();
+            std::io::stdout().flush().unwrap();
             stdin_buffer.clear();
             if stdin_buffered.read_line(&mut stdin_buffer).await.is_err() {
                 break;

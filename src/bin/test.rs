@@ -1,27 +1,34 @@
 use std::{
-    sync::{Arc, Mutex},
-    thread,
+    cmp::Ordering,
+    io::{self, Write},
 };
 
 fn main() {
-    let data = Arc::new(Mutex::new(0));
-    let mut handles = vec![];
-
-    for i in 0..10 {
-        let data = Arc::clone(&data);
-        let handle = thread::spawn(move || {
-            for j in 0..11 {
-                let mut data = data.lock().unwrap();
-                *data += 1;
-                println!("Thread: {} {} {}", i, j, *data);
+    let number: u16 = rand::random_range(0..100);
+    loop {
+        print!("Enter guess: ");
+        io::stdout().flush().unwrap();
+        let mut guess = String::new();
+        io::stdin().read_line(&mut guess).unwrap();
+        let guess: u16 = match guess.trim().parse() {
+            Ok(num) => num,
+            Err(_) => {
+                println!("Please enter a valid number!");
+                continue;
             }
-        });
-        handles.push(handle);
-    }
+        };
 
-    for handle in handles {
-        handle.join().unwrap();
+        match guess.cmp(&number) {
+            Ordering::Less => {
+                println!("Too Low!");
+            }
+            Ordering::Greater => {
+                println!("Too high!");
+            }
+            Ordering::Equal => {
+                println!("Yay you win! The number was {number}");
+                break;
+            }
+        }
     }
-    let data = *data.lock().unwrap();
-    println!("Final count: {}", data);
 }

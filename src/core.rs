@@ -17,12 +17,9 @@ impl Store {
         let data = self.data.lock().unwrap();
         data.get(&key).cloned()
     }
-    pub fn set(&self, key: String, value: String) -> bool {
+    pub fn set(&self, key: String, value: String) -> Option<String> {
         let mut data = self.data.lock().unwrap();
-        match data.insert(key, value) {
-            Some(_) => true,
-            None => false,
-        }
+        data.insert(key, value)
     }
     pub fn delete(&self, key: String) -> bool {
         let mut data = self.data.lock().unwrap();
